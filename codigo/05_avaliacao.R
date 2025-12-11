@@ -1,5 +1,5 @@
 # =====================================================================
-# 7. Avaliacao de resultados
+# 8. Avaliacao de resultados
 # =====================================================================
 
 preds_test <- predict(final_fit, new_data = test_df, type = "prob")|> bind_cols(test_df)
