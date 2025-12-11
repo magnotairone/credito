@@ -111,7 +111,7 @@ A decisão de aumento, manutenção ou redução do limite deve equilibrar cresc
 
 **Contexto (base simulada):** 
 
-- Painel de 5.000 clientes 
+- Painel de 6.000 clientes 
 - Período: jan/2023 a dez/2025
 - Cada cliente entra em uma `data_entrada` e gera observações mensais a partir dessa data.  
 - Objetivo: usar informações até `data_ref` para prever `atraso` (evento binário) na janela de previsão.
