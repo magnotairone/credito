@@ -326,10 +326,52 @@ ggplot(df_plot, aes(y = Etapa, x = Inicio, xend = Fim, color = Tipo)) +
 
 ## 5. Avaliação {.smaller}
 
-## 6. Implantação
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+decil_table <- read_csv("../dados/decil_table_oot.csv")
 
-- Como os resultados do modelo serão usados?
+ggplot(decil_table, aes(x = factor(decil))) +
+  geom_col(aes(y = taxa_mau), fill = "firebrick", alpha = 0.8) +
+  geom_line(aes(y = prob_media, group = 1), color = "steelblue", linewidth = 1) +
+  geom_point(aes(y = prob_media), color = "steelblue", size = 2) +
+  scale_y_continuous(labels = percent_format(accuracy = 1)) +
+  labs(title = "OOT: taxa de mau por decil (barras) e\n prob média prevista (linha)",
+       x = "Decil (1 = maior risco)", y = "Taxa / Probabilidade") +
+  theme_minimal(base_size = 15)
+```
 
-- Com qual frequencia devem estar disponíveis?
+## 5. Avaliação {.smaller}
+
+```{r}
+decil_table |> 
+  select(-lift) |> 
+  kable(format = "html", digits = 4) |> 
+  kable_styling(full_width = F, position = "left")
+  # scroll_box(width = "100%", height = "500px")
+```
+
+
+
+## 6. Implantação {.smaller}
+
+Perguntas que devem ser respondidas:
+
+- **Como os resultados do modelo serão usados?**  
+  Definir claramente o processo decisório que consumirá as previsões: revisão de limite, priorização de ações ou encaminhamento a estratégias específicas (ex.: oferta de renegociação, redução preventiva de limite, manutenção ou aumento).
+
+- **Com qual frequência devem estar disponíveis?**  
+  <!-- A periodicidade deve refletir a dinâmica do risco. Em modelos comportamentais, atualizações **mensais** são comuns, mas operações sensíveis podem demandar score **semanal** ou até **diário**, desde que as bases de dados suportem essa cadência. -->
+
+- **Quais dados precisam estar disponíveis em produção?**  
+  <!-- Garantir que todas as variáveis usadas no modelo (incluindo médias móveis, tendências e flags comportamentais) possam ser recalculadas rotineiramente com consistência e sem dados futuros. -->
+
+- **Como será feito o monitoramento do modelo em produção?**  
+  <!-- Definir métricas de estabilidade (PSI, drift de variáveis), performance (AUC, KS, taxa de mau por decil), taxas operacionais (decisões tomadas) e pontos de alerta para re-treino. -->
+
+- **Quais critérios determinam necessidade de reavaliação ou re-treino?**  
+  Alterações significativas no perfil da carteira, deterioração da performance, mudança de políticas internas ou ambiente macroeconômico.
+
+- **Como garantir auditabilidade e reprodutibilidade?**  
+  <!-- Documentação completa das versões do modelo, dados usados, lógica de decisão, períodos de treinamento, parâmetros utilizados e código versionado. -->
+
 
 # Obrigado

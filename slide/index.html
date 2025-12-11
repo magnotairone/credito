@@ -643,12 +643,125 @@ Logo, conjuntos de dados devem ser separados garantindo que:</p>
 <img data-src="index_files/figure-revealjs/unnamed-chunk-3-1.png" width="960" class="r-stretch"></section>
 <section id="avaliação" class="slide level2 smaller">
 <h2>5. Avaliação</h2>
+
+<img data-src="index_files/figure-revealjs/unnamed-chunk-4-1.png" width="960" class="r-stretch"></section>
+<section id="avaliação-1" class="slide level2 smaller">
+<h2>5. Avaliação</h2>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table caption-top" style="width: auto !important; ">
+<thead>
+<tr class="header">
+<th style="text-align: right;" data-quarto-table-cell-role="th">decil</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">n</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">prob_media</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">taxa_mau</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">n_mau</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">pct_obs</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1445</td>
+<td style="text-align: right;">0.6081</td>
+<td style="text-align: right;">0.5170</td>
+<td style="text-align: right;">747</td>
+<td style="text-align: right;">0.1000</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1445</td>
+<td style="text-align: right;">0.4856</td>
+<td style="text-align: right;">0.4194</td>
+<td style="text-align: right;">606</td>
+<td style="text-align: right;">0.1000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">1445</td>
+<td style="text-align: right;">0.4183</td>
+<td style="text-align: right;">0.3529</td>
+<td style="text-align: right;">510</td>
+<td style="text-align: right;">0.1000</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">1445</td>
+<td style="text-align: right;">0.3630</td>
+<td style="text-align: right;">0.3426</td>
+<td style="text-align: right;">495</td>
+<td style="text-align: right;">0.1000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">1445</td>
+<td style="text-align: right;">0.3126</td>
+<td style="text-align: right;">0.2969</td>
+<td style="text-align: right;">429</td>
+<td style="text-align: right;">0.1000</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">1445</td>
+<td style="text-align: right;">0.2678</td>
+<td style="text-align: right;">0.2858</td>
+<td style="text-align: right;">413</td>
+<td style="text-align: right;">0.1000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">1445</td>
+<td style="text-align: right;">0.2260</td>
+<td style="text-align: right;">0.2526</td>
+<td style="text-align: right;">365</td>
+<td style="text-align: right;">0.1000</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">1445</td>
+<td style="text-align: right;">0.1853</td>
+<td style="text-align: right;">0.2035</td>
+<td style="text-align: right;">294</td>
+<td style="text-align: right;">0.1000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">1444</td>
+<td style="text-align: right;">0.1385</td>
+<td style="text-align: right;">0.1870</td>
+<td style="text-align: right;">270</td>
+<td style="text-align: right;">0.0999</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">1444</td>
+<td style="text-align: right;">0.0713</td>
+<td style="text-align: right;">0.1510</td>
+<td style="text-align: right;">218</td>
+<td style="text-align: right;">0.0999</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </section>
-<section id="implantação" class="slide level2">
+<section id="implantação" class="slide level2 smaller">
 <h2>6. Implantação</h2>
+<p>Perguntas que devem ser respondidas:</p>
 <ul>
-<li><p>Como os resultados do modelo serão usados?</p></li>
-<li><p>Com qual frequencia devem estar disponíveis?</p></li>
+<li><p><strong>Como os resultados do modelo serão usados?</strong><br>
+Definir claramente o processo decisório que consumirá as previsões: revisão de limite, priorização de ações ou encaminhamento a estratégias específicas (ex.: oferta de renegociação, redução preventiva de limite, manutenção ou aumento).</p></li>
+<li><p><strong>Com qual frequência devem estar disponíveis?</strong><br>
+<!-- A periodicidade deve refletir a dinâmica do risco. Em modelos comportamentais, atualizações **mensais** são comuns, mas operações sensíveis podem demandar score **semanal** ou até **diário**, desde que as bases de dados suportem essa cadência. --></p></li>
+<li><p><strong>Quais dados precisam estar disponíveis em produção?</strong><br>
+<!-- Garantir que todas as variáveis usadas no modelo (incluindo médias móveis, tendências e flags comportamentais) possam ser recalculadas rotineiramente com consistência e sem dados futuros. --></p></li>
+<li><p><strong>Como será feito o monitoramento do modelo em produção?</strong><br>
+<!-- Definir métricas de estabilidade (PSI, drift de variáveis), performance (AUC, KS, taxa de mau por decil), taxas operacionais (decisões tomadas) e pontos de alerta para re-treino. --></p></li>
+<li><p><strong>Quais critérios determinam necessidade de reavaliação ou re-treino?</strong><br>
+Alterações significativas no perfil da carteira, deterioração da performance, mudança de políticas internas ou ambiente macroeconômico.</p></li>
+<li><p><strong>Como garantir auditabilidade e reprodutibilidade?</strong><br>
+<!-- Documentação completa das versões do modelo, dados usados, lógica de decisão, períodos de treinamento, parâmetros utilizados e código versionado. --></p></li>
 </ul>
 </section>
 <section id="obrigado" class="title-slide slide level1 center">

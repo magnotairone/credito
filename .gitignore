@@ -14,6 +14,3 @@
 .Rbuild/
 
 *.csv
-
-!/dados/
-!/slide/index.html 
