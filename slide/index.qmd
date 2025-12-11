@@ -19,15 +19,21 @@ editor_options:
 
 ## Quem sou eu
 
-## Agenda
-
 - Bacharel em Matemática Computacional (UFMG)
 - Mestre em Estatística (UFMG)
 - Doutor em Probabilidade e Estatística (USP)
 - Cientista de dados financeiros (BTG Pactual, Pefisa, XP Inc.)
 - Professor de pós-graduação (Insper)
 
-## Objetivos de Aprendizagem
+## Agenda
+
+- Introdução ao CRISP-DM
+
+- Etapas de um projeto de modelagem preditiva de risco de crédito
+
+- Exemplo com dados simulados em R
+
+<!-- ## Objetivos de Aprendizagem -->
 
 ## CRISP-DM {.smaller}
 
@@ -320,6 +326,10 @@ ggplot(df_plot, aes(y = Etapa, x = Inicio, xend = Fim, color = Tipo)) +
 
 ## 5. Avaliação {.smaller}
 
-## 6. Implantação {.smaller}
+## 6. Implantação
+
+- Como os resultados do modelo serão usados?
+
+- Com qual frequencia devem estar disponíveis?
 
 # Obrigado
