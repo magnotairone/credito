@@ -1,0 +1,19 @@
+# --- Arquivos de sistema do R ---
+.Rhistory
+.RData
+.Ruserdata
+.Renviron
+
+# --- Arquivos específicos do RStudio ---
+.Rproj.user/
+# Nota: O arquivo .Rproj (ex: projeto.Rproj) GERALMENTE DEVE ir para o git, 
+# mas a pasta .Rproj.user não (são configs locais da sua janela).
+
+# --- Arquivos temporários de Pacotes e Build ---
+.Rcheck/
+.Rbuild/
+
+*.csv
+
+!/dados/
+!/slide/index.html 

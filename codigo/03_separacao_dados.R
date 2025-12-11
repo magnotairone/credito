@@ -17,7 +17,7 @@ val_start  <- train_end %m+% months(6)
 test_start <- val_end   %m+% months(6)
 
 # construir partições (assumindo base_final com coluna data_ref)
-base_splits <- base_final %>%
+base_splits <- base_final |>
   mutate(
     partition = case_when(
       data_ref <= train_end           ~ "train",
@@ -33,6 +33,6 @@ base_splits |>
 
 
 # separar dfs finais (removendo 'gap')
-train_df <- base_splits %>% filter(partition == "train")
-val_df   <- base_splits %>% filter(partition == "val")
-test_df  <- base_splits %>% filter(partition == "test")
+train_df <- base_splits |> filter(partition == "train")
+val_df   <- base_splits |> filter(partition == "val")
+test_df  <- base_splits |> filter(partition == "test")
