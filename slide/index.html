@@ -539,17 +539,11 @@ Magno T. F. Severino <br> magnotairone@gmail.com
 <!-- - `limite = renda * U(1.0,2.5)` — limite ligado à renda.   -->
 <!-- - `uso_limite = pmin(limite, Normal(0.4*limite, 0.2*limite))` — uso com ruído (capado em `limite`).   -->
 <!-- - `prob_atraso = plogis(-1.8 + (650 - score_interno)/200)` → `atraso ~ Bernoulli(prob_atraso)`. -->
-</section>
-<section id="entendimento-dos-dados-2" class="slide level2 smaller">
-<h2>2. Entendimento dos dados</h2>
-<p><strong>Checks &amp; features a construir</strong></p>
-<ul>
-<li>Agregados comportamentais por janela (3/6/12 meses): média uso_limite, tendência de gasto, contagem de atrasos anteriores.<br>
-</li>
-<li>Flags: mudança brusca de limite, aumento consecutivo de uso.<br>
-</li>
-<li>Variáveis temporais: mês/ano, distância desde <code>data_entrada</code>, sazonalidade.</li>
-</ul>
+<!-- ## 2. Entendimento dos dados {.smaller} -->
+<!-- **Checks & features a construir** -->
+<!-- - Agregados comportamentais por janela (3/6/12 meses): média uso_limite, tendência de gasto, contagem de atrasos anteriores.   -->
+<!-- - Flags: mudança brusca de limite, aumento consecutivo de uso.   -->
+<!-- - Variáveis temporais: mês/ano, distância desde `data_entrada`, sazonalidade. -->
 </section>
 <section id="preparação-dos-dados" class="slide level2 smaller">
 <h2>3. Preparação dos dados</h2>
@@ -665,81 +659,81 @@ Logo, conjuntos de dados devem ser separados garantindo que:</p>
 <tr class="odd">
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">1445</td>
-<td style="text-align: right;">0.6081</td>
-<td style="text-align: right;">0.5170</td>
-<td style="text-align: right;">747</td>
+<td style="text-align: right;">0.5445</td>
+<td style="text-align: right;">0.5675</td>
+<td style="text-align: right;">820</td>
 <td style="text-align: right;">0.1000</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">2</td>
 <td style="text-align: right;">1445</td>
-<td style="text-align: right;">0.4856</td>
-<td style="text-align: right;">0.4194</td>
-<td style="text-align: right;">606</td>
+<td style="text-align: right;">0.4544</td>
+<td style="text-align: right;">0.4471</td>
+<td style="text-align: right;">646</td>
 <td style="text-align: right;">0.1000</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">3</td>
 <td style="text-align: right;">1445</td>
-<td style="text-align: right;">0.4183</td>
-<td style="text-align: right;">0.3529</td>
-<td style="text-align: right;">510</td>
+<td style="text-align: right;">0.4007</td>
+<td style="text-align: right;">0.3875</td>
+<td style="text-align: right;">560</td>
 <td style="text-align: right;">0.1000</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">4</td>
 <td style="text-align: right;">1445</td>
-<td style="text-align: right;">0.3630</td>
-<td style="text-align: right;">0.3426</td>
-<td style="text-align: right;">495</td>
+<td style="text-align: right;">0.3525</td>
+<td style="text-align: right;">0.3599</td>
+<td style="text-align: right;">520</td>
 <td style="text-align: right;">0.1000</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">5</td>
 <td style="text-align: right;">1445</td>
-<td style="text-align: right;">0.3126</td>
-<td style="text-align: right;">0.2969</td>
-<td style="text-align: right;">429</td>
+<td style="text-align: right;">0.3063</td>
+<td style="text-align: right;">0.2865</td>
+<td style="text-align: right;">414</td>
 <td style="text-align: right;">0.1000</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">6</td>
 <td style="text-align: right;">1445</td>
-<td style="text-align: right;">0.2678</td>
-<td style="text-align: right;">0.2858</td>
-<td style="text-align: right;">413</td>
+<td style="text-align: right;">0.2652</td>
+<td style="text-align: right;">0.2747</td>
+<td style="text-align: right;">397</td>
 <td style="text-align: right;">0.1000</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">7</td>
 <td style="text-align: right;">1445</td>
-<td style="text-align: right;">0.2260</td>
-<td style="text-align: right;">0.2526</td>
-<td style="text-align: right;">365</td>
+<td style="text-align: right;">0.2267</td>
+<td style="text-align: right;">0.2111</td>
+<td style="text-align: right;">305</td>
 <td style="text-align: right;">0.1000</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">8</td>
 <td style="text-align: right;">1445</td>
-<td style="text-align: right;">0.1853</td>
-<td style="text-align: right;">0.2035</td>
-<td style="text-align: right;">294</td>
+<td style="text-align: right;">0.1887</td>
+<td style="text-align: right;">0.1958</td>
+<td style="text-align: right;">283</td>
 <td style="text-align: right;">0.1000</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">9</td>
 <td style="text-align: right;">1444</td>
-<td style="text-align: right;">0.1385</td>
-<td style="text-align: right;">0.1870</td>
-<td style="text-align: right;">270</td>
+<td style="text-align: right;">0.1502</td>
+<td style="text-align: right;">0.1600</td>
+<td style="text-align: right;">231</td>
 <td style="text-align: right;">0.0999</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">10</td>
 <td style="text-align: right;">1444</td>
-<td style="text-align: right;">0.0713</td>
-<td style="text-align: right;">0.1510</td>
-<td style="text-align: right;">218</td>
+<td style="text-align: right;">0.1022</td>
+<td style="text-align: right;">0.1184</td>
+<td style="text-align: right;">171</td>
 <td style="text-align: right;">0.0999</td>
 </tr>
 </tbody>

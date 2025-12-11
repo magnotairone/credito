@@ -57,8 +57,7 @@ base <- expand_grid(
          renda, limite, uso_limite, atraso, score_interno)
 
 # ver algumas linhas de exemplo
-base |> slice_sample(n = 10)
+set.seed(42)
+base |> slice_sample(n = 10) |> view()
 
 base |> filter(id == "C02186") |> view()
-
-base |> group_by(atraso) |> summarise(n = n()) |> mutate(n = n/nrow(base))

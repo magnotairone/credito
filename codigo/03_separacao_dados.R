@@ -16,14 +16,14 @@ test_end   <- max(base_final$data_ref)
 val_start  <- train_end %m+% months(6)  
 test_start <- val_end   %m+% months(6)
 
-# construir partições (assumindo base_final com coluna data_ref)
+# construir partições
 base_splits <- base_final |>
   mutate(
     partition = case_when(
       data_ref <= train_end           ~ "train",
       data_ref >= val_start & data_ref <= val_end ~ "val",
       data_ref >= test_start          ~ "test",
-      TRUE                            ~ "gap"   # datas que caem no espaço proibido (possível) 
+      TRUE                            ~ "gap"   # datas que caem no espaço proibido 
     )
   )
 

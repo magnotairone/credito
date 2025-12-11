@@ -79,7 +79,6 @@ base_final <- base_final |>
     uso_trend_3m = uso_limite_ratio - lag(uso_limite_ratio, 3),
     
     # Flag indicando uso acima de 80% do limite
-    # Muito utilizado em modelos reais: clientes frequentemente “colados no limite” têm risco maior.
     stress_flag = as.integer(uso_limite_ratio > 0.8),
     
     # Proporção de meses, nos últimos 6, em que o cliente esteve em situação de estresse (uso > 80%)

@@ -18,27 +18,6 @@ base_final |>
   count(ever60_mob6) |>
   mutate(prop = n / sum(n))
 
-
-# ---------------------------------------------------------------------
-# 5.2 Taxa de mau por mês (data_ref)
-# ---------------------------------------------------------------------
-
-taxa_mensal <- base_final |>
-  group_by(data_ref) |>
-  summarise(taxa = mean(ever60_mob6, na.rm = TRUE))
-
-# gráfico
-ggplot(taxa_mensal, aes(x = data_ref, y = taxa)) +
-  geom_line(color = "steelblue", linewidth = 1) +
-  geom_point(color = "steelblue") +
-  labs(
-    title = "Taxa de mau (ever60_mob6) por mês",
-    x = "data_ref",
-    y = "Taxa de mau"
-  ) +
-  theme_minimal()
-
-
 # ---------------------------------------------------------------------
 # 5.3 Relação entre score_interno e probabilidade de ever60_mob6
 # ---------------------------------------------------------------------
@@ -75,28 +54,6 @@ ggplot(base_final, aes(x = uso_limite_ratio)) +
   ) +
   theme_minimal()
 
-# 
-# # ---------------------------------------------------------------------
-# # 5.5 Taxa de mau por faixas de uso do limite
-# # ---------------------------------------------------------------------
-# 
-# df_uso <- base_final |>
-#   mutate(uso_bin = ntile(uso_limite_ratio, 20)) |>
-#   group_by(uso_bin) |>
-#   summarise(
-#     uso_med = mean(uso_limite_ratio, na.rm = TRUE),
-#     taxa_mau = mean(ever60_mob6, na.rm = TRUE)
-#   )
-# 
-# ggplot(df_uso, aes(x = uso_med, y = taxa_mau)) +
-#   geom_line(linewidth = 1, color = "darkgreen") +
-#   geom_point(color = "darkgreen") +
-#   labs(
-#     title = "Taxa de mau por faixa de uso do limite",
-#     x = "Uso médio do limite",
-#     y = "Taxa de mau"
-#   ) +
-#   theme_minimal()
 
 
 # ---------------------------------------------------------------------
@@ -154,6 +111,6 @@ ggplot(df_rel_tempo, aes(x = meses_desde_entrada, y = taxa_mau)) +
 
 vars_corr <- base_final |>
   select(uso_limite_ratio, uso_limite_m3, uso_limite_m6,
-         atr30_m12, score_interno, score_m3, ever60_mob6)
+         score_interno, score_m3, ever60_mob6)
 
 cor(vars_corr, use = "complete.obs")

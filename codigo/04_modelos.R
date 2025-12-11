@@ -112,4 +112,5 @@ final_fit <- fit(final_wf, data = trainval_df)
 # Avaliação final no TEST (OOT)
 # ---------------------------
 res_test <- eval_model(final_fit, test_df, positive = "1", threshold = 0.5) |> mutate(modelo = "final_model")
-res_test |> select(modelo, auc, sens) |> print()
+res_test |> select(modelo, sens) |> print()
+

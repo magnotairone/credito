@@ -143,13 +143,13 @@ dados |>
 <!-- - `uso_limite = pmin(limite, Normal(0.4*limite, 0.2*limite))` — uso com ruído (capado em `limite`).   -->
 <!-- - `prob_atraso = plogis(-1.8 + (650 - score_interno)/200)` → `atraso ~ Bernoulli(prob_atraso)`. -->
 
-## 2. Entendimento dos dados {.smaller}
+<!-- ## 2. Entendimento dos dados {.smaller} -->
 
-**Checks & features a construir**
+<!-- **Checks & features a construir** -->
 
-- Agregados comportamentais por janela (3/6/12 meses): média uso_limite, tendência de gasto, contagem de atrasos anteriores.  
-- Flags: mudança brusca de limite, aumento consecutivo de uso.  
-- Variáveis temporais: mês/ano, distância desde `data_entrada`, sazonalidade.
+<!-- - Agregados comportamentais por janela (3/6/12 meses): média uso_limite, tendência de gasto, contagem de atrasos anteriores.   -->
+<!-- - Flags: mudança brusca de limite, aumento consecutivo de uso.   -->
+<!-- - Variáveis temporais: mês/ano, distância desde `data_entrada`, sazonalidade. -->
 
 
 ## 3. Preparação dos dados {.smaller}
@@ -295,7 +295,7 @@ df_plot <- tibble(
                  levels = c("3. Teste", "2. Validação", "1. Treino", "Gap (6m)")), # Ordem eixo Y
   Inicio = c(train_start, train_end, val_start, val_end, test_start),
   Fim    = c(train_end, val_start, val_end, test_start, test_end),
-  Tipo   = c("Modelagem", "Maturação/Descarte", "Modelagem", "Maturação/Descarte", "Modelagem")
+  Tipo   = c("Modelagem", "Descarte", "Modelagem", "Descarte", "Modelagem")
 )
 
 # --- 4. Gerando o Gráfico ---
@@ -308,7 +308,7 @@ ggplot(df_plot, aes(y = Etapa, x = Inicio, xend = Fim, color = Tipo)) +
   geom_text(aes(x = Fim, label = format(Fim, "%b/%y")), hjust = -0.2, size = 3, color = "black") +
   
   # Customização visual
-  scale_color_manual(values = c("Maturação/Descarte" = "grey80", "Modelagem" = "#0073C2")) +
+  scale_color_manual(values = c("Descarte" = "grey80", "Modelagem" = "#0073C2")) +
   scale_x_date(date_breaks = "3 months", date_labels = "%b %Y") +
   labs(
     title = "Janelas de Modelagem Temporal",
@@ -345,7 +345,7 @@ ggplot(decil_table, aes(x = factor(decil))) +
 
 ```{r}
 decil_table |> 
-  select(-lift) |> 
+  # select(-lift) |> 
   kable(format = "html", digits = 4) |> 
   kable_styling(full_width = F, position = "left")
   # scroll_box(width = "100%", height = "500px")

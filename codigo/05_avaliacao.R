@@ -20,6 +20,7 @@ decil_table <- preds_test|>
   arrange(decil)|>
   mutate(pct_obs = n / sum(n))
 
+decil_table |> write_csv("dados/decil_table_oot.csv")
 
 # gráfico (taxa mau vs prob média)
 ggplot(decil_table, aes(x = factor(decil))) +
