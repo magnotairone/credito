@@ -1,0 +1,81 @@
+.reveal h1, 
+.reveal h2 {
+  color: #004D4D;
+}
+
+.reveal ul li::marker {
+  color: #004D4D;
+}
+
+.reveal .slides section:first-of-type .footer {
+  display: none !important;
+}
+
+.very-small-slide {
+  font-size: 70% !important;
+  line-height: 1.05 !important;
+  max-width: 92%;
+  margin: 0 auto;
+}
+
+.very-small-slide h3 {
+  font-size: 1.05em; /* ajusta subtítulos */
+  margin-bottom: 0.25em;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin-top: 12px;
+}
+
+.card {
+  background: #f7f7f7;
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+  font-size: 70%;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  border: 1px solid rgba(0,0,0,0.08);
+}
+
+.card-number {
+  font-size: 180%;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #1a1a1a;
+}
+
+.card-label {
+  font-size: 90%;
+  color: #555;
+}
+
+.teaching-card {
+  background: #f7f7f7;
+  border-radius: 10px;
+  padding: 14px 16px;
+  border: 1px solid rgba(0,0,0,0.08);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.07);
+  font-size: 90%;
+  line-height: 1.25;
+  height: 100%;
+}
+
+.teaching-title {
+  font-size: 120%;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #1a1a1a;
+}
+
+.reveal h1, 
+.reveal h2,
+.reveal h3,{
+  color: #004D4D;
+}
+
+.reveal ul li::marker {
+  color: #004D4D;
+}

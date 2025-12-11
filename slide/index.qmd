@@ -1,0 +1,325 @@
+---
+title: "Modelagem Preditiva de Risco de Crédito com R"
+subtitle: "I Workshop de Estatística e Ciência de Dados Aplicadas a Finanças"
+author: "Magno T. F. Severino <br> magnotairone@gmail.com"
+date: "11/12/2025"
+format:
+  revealjs:
+    theme: simple
+    transition: fade
+    slide-number: true
+    fontawesome: true
+    css: styles.css
+    footer: ""
+lang: pt
+engine: knitr
+editor_options: 
+  chunk_output_type: console
+---
+
+## Quem sou eu
+
+## Agenda
+
+- Bacharel em Matemática Computacional (UFMG)
+- Mestre em Estatística (UFMG)
+- Doutor em Probabilidade e Estatística (USP)
+- Cientista de dados financeiros (BTG Pactual, Pefisa, XP Inc.)
+- Professor de pós-graduação (Insper)
+
+## Objetivos de Aprendizagem
+
+## CRISP-DM {.smaller}
+
+:::: {.columns}
+::: {.column width="45%"}
+<br> 
+
+- *Cross Industry Standard Process for Data Mining* (Processo Padrão de Vários Segmentos de Mercados para Mineração de Dados)
+
+- Modelo amplamente adotado para orientar projetos de dados.
+
+- Descreve as fases típicas de um projeto, as tarefas de cada fase e as relações entre elas, oferecendo uma visão estruturada de todo o ciclo de vida da análise de dados.
+
+*Fonte: IBM CRISP-DM.*
+
+:::
+
+::: {.column width="55%"}
+[![](https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/CRISP-DM_Process_Diagram.png/500px-CRISP-DM_Process_Diagram.png)](https://pt.wikipedia.org/wiki/Cross_Industry_Standard_Process_for_Data_Mining)
+:::
+:::: 
+
+## CRISP-DM
+
+1. Entendimento do negócio
+2. Entendimento dos dados
+3. Preparação dos dados
+4. Modelagem
+5. Avaliação
+6. Implantação
+
+## 1. Entendimento do negócio {.smaller}
+
+**Objetivo** 
+
+Desenvolver um modelo comportamental de risco de crédito para clientes ativos, com horizonte de previsão de 6 meses, que estime a **probabilidade de inadimplência** e sirva de apoio à política de gestão de **limites de crédito**.
+
+<!-- - Desenvolver um modelo comportamental de risco de crédito para clientes ativos, com horizonte de previsão de 6 meses, que estime a probabilidade de inadimplência e sirva de apoio à política de gestão de limites de crédito. -->
+
+<br> 
+
+**Contexto**
+
+A instituição já possui uma base de clientes com histórico de pagamentos e comportamento de uso do limite.
+
+As revisões de limite ocorrem periodicamente (mensal, trimestral ou semestral).
+
+A decisão de aumento, manutenção ou redução do limite deve equilibrar crescimento e risco de inadimplência.
+
+## 1. Entendimento do negócio
+
+**Exemplo de uso prático**
+
+- Clientes de baixo risco ($PD < p_1$): candidatos a **aumento de limite** ou ofertas de produtos adicionais.
+
+- Clientes de risco moderado ($PD$ entre $p_1$ e $p_2$): **manter limite** e monitorar comportamento.
+
+- Clientes de alto risco ($PD > p_2$): **revisar limite para baixo** ou bloquear aumentos automáticos.
+
+## 1. Entendimento do negócio {.smaller}
+
+**Como o modelo se conecta à operação**
+
+
+| Decisão Operacional | Uso do Modelo | Exemplo de Ação |
+| :--- | :--- | :--- |
+| **Aumento de limite** | Permitir aumento automático apenas para clientes com **PD < $p_1$** | Campanha de upgrade de limite |
+| **Redução de limite** | Reduzir limite de clientes com **PD > $p_2$** | Bloqueio preventivo |
+| **Cobrança preventiva** | Priorizar contato com clientes de alto risco | Avisos ou ofertas de parcelamento |
+| **Monitoramento** | Acompanhar evolução mensal do PD médio da carteira | Relatórios de risco comportamental |
+
+## 2. Entendimento dos dados
+
+**Contexto (base simulada):** 
+
+- Painel de 5.000 clientes 
+- Período: jan/2023 a dez/2025
+- Cada cliente entra em uma `data_entrada` e gera observações mensais a partir dessa data.  
+- Objetivo: usar informações até `data_ref` para prever `atraso` (evento binário) na janela de previsão.
+
+## 2. Entendimento dos dados {.smaller}
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+library(kableExtra)
+library(tidyverse)
+
+dados <- read_csv("../dados/base_final_modelagem.csv")
+
+set.seed(123)
+dados |> 
+  slice_sample(n=10) |> 
+  kable(format = "html") |> 
+  kable_styling(full_width = F, position = "left") |> 
+  scroll_box(width = "100%", height = "500px")
+```
+
+<!-- **Resumo técnico (variáveis geradas)** -->
+
+<!-- - `id_cliente` — identificadores.   -->
+<!-- - `data_entrada`, `data_ref` — datas.   -->
+<!-- - `anos_desde_entrada`, `anos_desde_entrada`, `idade`, `idade_base` — idade evolutiva.   -->
+<!-- - `renda` — log-normal (skewed).   -->
+<!-- - `score_interno` ~ Normal(mean=650, sd=60).   -->
+<!-- - `limite = renda * U(1.0,2.5)` — limite ligado à renda.   -->
+<!-- - `uso_limite = pmin(limite, Normal(0.4*limite, 0.2*limite))` — uso com ruído (capado em `limite`).   -->
+<!-- - `prob_atraso = plogis(-1.8 + (650 - score_interno)/200)` → `atraso ~ Bernoulli(prob_atraso)`. -->
+
+## 2. Entendimento dos dados {.smaller}
+
+**Checks & features a construir**
+
+- Agregados comportamentais por janela (3/6/12 meses): média uso_limite, tendência de gasto, contagem de atrasos anteriores.  
+- Flags: mudança brusca de limite, aumento consecutivo de uso.  
+- Variáveis temporais: mês/ano, distância desde `data_entrada`, sazonalidade.
+
+
+## 3. Preparação dos dados {.smaller}
+
+**Seleção de público**
+
+- Foco em clientes maduros: filtrar para `meses_desde_entrada >= 6` na `data_ref`.
+
+- Removemos observações cujo rótulo “próximos 6 meses” estaria censurado: `data_ref <= corte_data_ref` (última data_ref com +6 meses futuros observáveis).
+
+## 3. Preparação dos dados {.smaller}
+
+**Engenharia de Atributos**
+
+Para melhorar a capacidade preditiva do modelo comportamental, criamos variáveis que capturam
+tendências, intensidade de uso do crédito e sinais de estresse financeiro ao longo do tempo.
+
+##### Médias móveis (suavização do comportamento)
+- **uso_limite_m3**: média do uso do limite nos últimos 3 meses; reduz variações pontuais.
+- **uso_limite_m6**: tendência de uso em janela mais longa; indica padrão estável de consumo.
+- **score_m3**: suavização do score interno; captura deterioração gradual do risco.
+
+##### Tendências (aceleração do comportamento)
+- **uso_trend_1m**: variação do uso do limite no último mês.
+- **uso_trend_3m**: variação acumulada em 3 meses; identifica aumento persistente de consumo.
+
+## 3. Preparação dos dados {.smaller}
+
+**Engenharia de Atributos**
+
+##### Indicadores de estresse financeiro
+- **stress_flag**: cliente opera acima de 80% do limite no mês (sinal de aperto financeiro).
+- **stress_m6**: proporção de meses em estresse nos últimos 6 meses; mede persistência do risco.
+
+##### Exposição relativa
+- **coef_sobrelimitado**: razão limite/renda; clientes com limite alto frente à renda tendem a maior risco.
+
+
+Essas features ajudam a identificar *sinais precoces* de deterioração antes do atraso efetivo, apoiando decisões de gestão de limite.
+
+## Engenharia de Atributos {.smaller}
+
+:::: {.columns}
+::: {.column width="55%"}
+Para melhorar a capacidade preditiva do modelo comportamental foram criadas variáveis que capturam:
+
+- **Médias móveis:** `uso_limite_m3`, `uso_limite_m6`, `score_m3` — suavizam ruído e evidenciam tendência.  
+- **Tendências:** `uso_trend_1m`, `uso_trend_3m` — indicam aceleração no consumo do limite.  
+- **Estresse:** `stress_flag` (uso > 80%), `stress_m6` — detectam persistência de comportamento arriscado.  
+- **Exposição relativa:** `coef_sobrelimitado` = `limite / renda` — avalia alavancagem do cliente.
+
+<!-- Essas features ajudam a identificar *sinais precoces* de deterioração antes do atraso efetivo, apoiando decisões de gestão de limite. -->
+
+:::
+
+::: {.column width="45%"}
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.height=13}
+library(ggplot2)
+library(dplyr)
+library(lubridate)
+library(scales)
+
+# selecionar alguns clientes exemplares (se base_final existir)
+set.seed(42)
+if (exists("dados")) {
+  sample_ids <- dados %>% distinct(id) %>% 
+    slice_sample(n = 2) %>% pull(id)
+  
+  df_plot <- dados %>%
+    filter(id %in% sample_ids) %>%
+    arrange(id, data_ref) %>%
+    mutate(
+      stress_flag = ifelse(uso_limite_ratio > 0.8, 1, 0)
+    )
+  
+  p <- ggplot(df_plot, aes(x = data_ref)) +
+    geom_line(aes(y = uso_limite_ratio), color = "gray40", size = 0.6) +
+    geom_line(aes(y = uso_limite_m3), color = "steelblue", size = 1) +
+    geom_point(data = df_plot %>% filter(stress_flag == 1),
+               aes(y = uso_limite_ratio), color = "firebrick", size = 1.6, alpha = 0.9) +
+    facet_wrap(~ id, ncol = 1, scales = "free_y") +
+    scale_y_continuous(labels = percent_format(accuracy = 1), limits = c(0,1)) +
+    scale_x_date(date_breaks = "6 months", date_labels = "%b %Y", expand = c(0.01,0.01)) +
+    labs(
+      title = "Exemplo: uso do limite (linha cinza), média móvel 3m (azul)\n e pontos de estresse (vermelho)",
+      x = NULL, y = "Uso do limite (ratio)"
+    ) +
+    theme_minimal(base_size = 20) +
+    theme(
+      axis.text.x = element_text(angle = 45, hjust = 1),
+      strip.text = element_text(face = "bold")
+    )
+  
+  print(p)
+}
+```
+:::
+::::
+
+## 4. Modelagem {.smaller}
+
+**Estratégia**
+
+- Para evitar vazamento de informação (*target leakage*) em modelos comportamentais, a separação dos dados precisa respeitar a lógica temporal do rótulo: cada observação (cliente, mês) usa informações dos
+**próximos 6 meses** para definir a variável-alvo (`ever60_mob6`). 
+- Assim, não é permitido que
+observações de treino e validação se sobreponham às janelas futuras usadas como rótulo.
+
+<!-- Como o modelo será aplicado mensalmente, cada (cliente, mês) representa uma observação válida. -->
+<!-- Usamos todas as fotos mensais no treino, validação e teste, desde que os splits sejam 100% temporais. -->
+<!-- O teste OOT deve conter meses que não aparecem no treino nem na validação, evitando vazamento temporal. -->
+<!-- Dentro de cada conjunto, um cliente pode aparecer várias vezes; entre conjuntos, não há restrição adicional desde que as janelas temporais não se sobreponham. -->
+
+. . .
+
+Se uma observação tem data de referência `t`, sua janela de rótulo vai até `t + 6 meses`.  
+Logo, conjuntos de dados devem ser separados garantindo que:
+
+- **train_end + 6 meses < val_start**
+- **val_end + 6 meses < test_start**
+
+## 4. Modelagem {.smaller}
+
+<!-- - Cada `(id_cliente, data_ref)` é uma observação válida (um ponto); -->
+
+<!-- - As janelas são separadas no tempo para evitar vazamento entre elas. -->
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(lubridate)
+train_start <- min(dados$data_ref)
+train_end   <- ymd("2024-02-01")
+val_end     <- ymd("2024-10-01")
+test_end    <- max(dados$data_ref)
+
+val_start  <- train_end %m+% months(6)  
+test_start <- val_end %m+% months(6)
+
+# --- 3. Criando Tabela para o ggplot ---
+# Organizando as etapas para plotagem
+df_plot <- tibble(
+  Etapa = factor(c("1. Treino", "Gap (6m)", "2. Validação", "Gap (6m)", "3. Teste"),
+                 levels = c("3. Teste", "2. Validação", "1. Treino", "Gap (6m)")), # Ordem eixo Y
+  Inicio = c(train_start, train_end, val_start, val_end, test_start),
+  Fim    = c(train_end, val_start, val_end, test_start, test_end),
+  Tipo   = c("Modelagem", "Maturação/Descarte", "Modelagem", "Maturação/Descarte", "Modelagem")
+)
+
+# --- 4. Gerando o Gráfico ---
+ggplot(df_plot, aes(y = Etapa, x = Inicio, xend = Fim, color = Tipo)) +
+  # Barras principais
+  geom_segment(linewidth = 8) +
+  
+  # Adicionando textos com as datas nas extremidades das barras
+  geom_text(aes(label = format(Inicio, "%b/%y")), hjust = 1.2, size = 3, color = "black") +
+  geom_text(aes(x = Fim, label = format(Fim, "%b/%y")), hjust = -0.2, size = 3, color = "black") +
+  
+  # Customização visual
+  scale_color_manual(values = c("Maturação/Descarte" = "grey80", "Modelagem" = "#0073C2")) +
+  scale_x_date(date_breaks = "3 months", date_labels = "%b %Y") +
+  labs(
+    title = "Janelas de Modelagem Temporal",
+    subtitle = "Divisão de Treino, Validação e Teste com Gaps de 6 meses",
+    x = "Linha do Tempo",
+    y = NULL,
+    color = "Fase"
+  ) +
+  theme_minimal(base_size = 15) +
+  theme(
+    legend.position = "bottom",
+    axis.text.y = element_text(face = "bold", size = 12),
+    panel.grid.minor = element_blank()
+  )
+```
+
+
+## 5. Avaliação {.smaller}
+
+## 6. Implantação {.smaller}
+
+# Obrigado
